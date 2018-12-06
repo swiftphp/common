@@ -132,5 +132,42 @@ class ObjectUtil
             }
         }
     }
+
+    /**
+     * 简单复制对象属性(源对象通过字段读取,目标对象通过setter或字段写入)
+     * @param object $srcObject                 源对象
+     * @param object $destObject                目标对象
+     * @param array $excludedProperties         排除字段(针对源对象)
+     * @param boolean $fieldAccess              是否允许直接访问公开字段(针对目标对象)
+     * @return boolean
+     */
+    public static function simpleCopyProperties($srcObject,$destObject,$excludedProperties=null,$fieldAccess=false)
+    {
+        if(!is_object($srcObject)||!is_object($destObject)){
+            return false;
+        }
+        if($excludedProperties==null){
+            $excludedProperties=[];
+        }
+
+        //目标对象字段集
+        $destFields=[];
+        if($fieldAccess){
+            $destFields=array_keys(get_object_vars($destObject));
+        }
+
+        //从源对象字段复制
+        foreach (get_object_vars($srcObject) as $prop=>$value){
+            if(!in_array($prop, $excludedProperties)){
+                if(self::hasSetter($destObject, $prop)){
+                    $setter=self::getSetter($destObject, $prop);
+                    $destObject->$setter($value);
+                }else if(in_array($prop, $destFields)){
+                    $destObject->$prop=$value;
+                }
+            }
+        }
+
+    }
 }
 
