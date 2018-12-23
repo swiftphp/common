@@ -34,8 +34,12 @@ class DataUtil
         $pidValue=Convert::getFieldValue($current, $pidField,true);
         while($pidValue){
             $current=self::_getAncestors($source,$idField,$pidValue);
-            $returnValue[]=$current;
-            $pidValue=Convert::getFieldValue($current, $pidField,true);
+            if(!empty($current)){
+                $returnValue[]=$current;
+                $pidValue=Convert::getFieldValue($current, $pidField,true);
+            }else{
+                break;
+            }
         }
 
         //echo $returnValue[1][$idField];
