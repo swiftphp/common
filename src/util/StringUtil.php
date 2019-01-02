@@ -154,6 +154,7 @@ class StringUtil
      * 把键值对数组拼装成url参数字符串
      * @param array $params     键值对数组
      * @param string|array $removeKey 移除的键
+     * @deprecated 使用UrlUtil::joinUrlParams
      */
     public static function joinUrlParams($params=[],$removeKeys=[])
     {
