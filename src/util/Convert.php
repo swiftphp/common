@@ -257,6 +257,7 @@ class Convert
      * 对象属性转换为键值对数组
      * @param object $obj
      * @param array $fields 提取的属性名
+     * @return array
      */
     public static function ObjectToArray($obj,$fields=[])
     {
