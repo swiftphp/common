@@ -271,6 +271,7 @@ class Convert
                         $array[$fd]=$obj->$fd;
                     }
                 }
+                return $array;
             }
         }
         return [];
