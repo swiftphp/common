@@ -254,6 +254,28 @@ class Convert
     }
 
     /**
+     * 对象属性转换为键值对数组
+     * @param object $obj
+     * @param array $fields 提取的属性名
+     */
+    public static function ObjectToArray($obj,$fields=[])
+    {
+        if(is_object($obj)){
+            if(empty($fields)){
+                return get_object_vars($obj);
+            }else{
+                $array=[];
+                foreach ($fields as $fd){
+                    if(property_exists($obj, $fd)){
+                        $array[$fd]=$obj->$fd;
+                    }
+                }
+            }
+        }
+        return [];
+    }
+
+    /**
      * 复制对象属性值
      * @param object $srcObject 	源对象
      * @param object $destObject	引用传递:目标对象
