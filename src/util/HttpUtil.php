@@ -25,7 +25,7 @@ class HttpUtil
         if($isPost){
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         }
-        if($sslVerifypeer!=null){
+        if(!is_null($sslVerifypeer)){
             curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,$sslVerifypeer);
             curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,$sslVerifypeer);//严格校验
         }
