@@ -50,13 +50,13 @@ class UrlUtil
         if(!is_array($removeKeys)){
             $removeKeys=[$removeKeys];
         }
-        $params=array_filter($params,function($k,$v) use($removeKeys){
-            return in_array($k, $removeKeys);
-        });
-        if(empty($params)){
-            return "";
-        }
-        return http_build_query($params);
+        $params=array_filter($params,function($key) use($removeKeys){
+            return !in_array($key, $removeKeys);
+        },ARRAY_FILTER_USE_KEY);
+            if(empty($params)){
+                return "";
+            }
+            return http_build_query($params);
     }
 
     /**
