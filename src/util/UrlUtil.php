@@ -13,7 +13,7 @@ class UrlUtil
      * @param string $url
      * @return string
      */
-    public function getBaseUrl($url){
+    public static function getBaseUrl($url){
         $pos=strpos($url, "?");
         if($pos===false){
             return $url;
@@ -29,7 +29,7 @@ class UrlUtil
      * @param string $url
      * @return array
      */
-    public function getUrlParams($url){
+    public static function getUrlParams($url){
         $pos=strpos($url, "?");
         if($pos===false || $pos==strlen($url)-1){
             return [];
@@ -81,7 +81,7 @@ class UrlUtil
     }
 
     /**
-     * 从URL移除参数(不支持数组类型的参数)
+     * 从URL移除参数
      * @param string $url
      * @param array $removeKeys
      */
