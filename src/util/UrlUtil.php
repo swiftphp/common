@@ -8,57 +8,80 @@ namespace swiftphp\common\util;
  */
 class UrlUtil
 {
+    /**
+     * 获取基本URL
+     * @param string $url
+     * @return string
+     */
+    public function getBaseUrl($url){
+        $pos=strpos($url, "?");
+        if($pos===false){
+            return $url;
+        }else if($pos===0){
+            return "";
+        }else{
+            return substr($url, 0, $pos);
+        }
+    }
+    
+    /**
+     * 获取URL查询参数(点号与空格会转为下划线)
+     * @param string $url
+     * @return array
+     */
+    public function getUrlParams($url){
+        $pos=strpos($url, "?");
+        if($pos===false || $pos==strlen($url)-1){
+            return [];
+        }
+        $paramStr=substr($url, $pos+1);
+        $values=[];
+        parse_str($paramStr, $values);
+        return $values;
+    }    
 
     /**
      * 把键值对数组拼装成url参数字符串
      * @param array $params     键值对数组
      * @param string|array $removeKey 移除的键
      */
-    public static function joinUrlParams($params=[],$removeKeys=[])
+    public static function joinUrlParams(array $params=[],$removeKeys=[])
     {
         if(!is_array($removeKeys)){
             $removeKeys=[$removeKeys];
         }
-        $url="";
-        foreach ($params as $k=>$v){
-            if(!in_array($k, $removeKeys)){
-                $url.="&".$k."=".urlencode($v);
-            }
+        $params=array_filter($params,function($k,$v) use($removeKeys){
+            return in_array($k, $removeKeys);
+        });
+        if(empty($params)){
+            return "";
         }
-        if(!empty($url)){
-            $url=substr($url, 1);
-        }
-        return $url;
+        return http_build_query($params);
     }
 
     /**
-     * 附加参数到URL
+     * 附加参数到URL(已存在的参数会被覆盖)
      * @param string $url
      * @param array $appendParams
      * @return string
      */
-    public static function appendUrlParams($url,$appendParams=[])
+    public static function appendUrlParams($url,$appendParams=[],$removeKeys=[])
     {
         if(empty($appendParams)){
             return $url;
         }
-        $paramString="";
-        foreach ($appendParams as $key => $value){
-            $paramString.="&".$key."=".urlencode($value);
+        $baseUrl=self::getBaseUrl($url);
+        $params=self::getUrlParams($url);
+        $params=array_merge($params,$appendParams);
+        $paramStr=self::joinUrlParams($params,$removeKeys);
+        if(empty($paramStr)){
+            return $baseUrl;
         }
-        $paramString=substr($paramString, 1);
-
-        $pos=strpos($url, "?");
-        if($pos>0 || $pos===0){
-            $url.="&".$paramString;
-        }else{
-            $url.="?".$paramString;
-        }
-        return $url;
+        return $baseUrl."?".$paramStr;
     }
 
     /**
-     * 从URL移除参数
+     * 从URL移除参数(不支持数组类型的参数)
      * @param string $url
      * @param array $removeKeys
      */
@@ -67,31 +90,13 @@ class UrlUtil
         if(empty($removeKeys)){
             return $url;
         }
-        $pos=strpos($url, "?");
-        if($pos>0 || $pos===0){
-            $baseUrl=substr($url, 0,$pos);
-            $paramStr=substr($url, $pos+1);
-            if(empty($paramStr)){
-                return $url;
-            }
-            $params=explode("&", $paramStr);
-            $paramStr="";
-            foreach ($params as $param){
-                $kv=explode("=", $param);
-                if(!in_array($kv[0], $removeKeys)){
-                    $paramStr.="&".$kv[0]."=".(count($kv)>1?$kv[1]:"");
-                }
-            }
-            if(!empty($paramStr)){
-                $paramStr=substr($paramStr, 1);
-            }
-            if(!empty($paramStr)){
-                $baseUrl=$baseUrl."?".$paramStr;
-            }
+        $baseUrl=self::getBaseUrl($url);
+        $params=self::getUrlParams($url);
+        $paramStr=self::joinUrlParams($params,$removeKeys);
+        if(empty($paramStr)){
             return $baseUrl;
-        }else{
-            return $url;
         }
+        return $baseUrl."?".$paramStr;
     }
 }
 
