@@ -53,10 +53,10 @@ class UrlUtil
         $params=array_filter($params,function($key) use($removeKeys){
             return !in_array($key, $removeKeys);
         },ARRAY_FILTER_USE_KEY);
-            if(empty($params)){
-                return "";
-            }
-            return http_build_query($params);
+        if(empty($params)){
+            return "";
+        }
+        return http_build_query($params);
     }
 
     /**
