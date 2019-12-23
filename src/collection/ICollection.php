@@ -6,7 +6,7 @@ namespace swiftphp\common\collection;
  * @author Tomix
  *
  */
-interface ICollection extends IStream
+interface ICollection extends \Countable,IStreamable
 {
     /**
      * 元素计数

@@ -32,25 +32,13 @@ class ArrayCollection implements ICollection
         return new ArrayCollection($entries);
     }
     
-    /**
-     * 过滤元素
-     * @return ArrayCollection
-     */
-    public function filter(\Closure $filter){
-        $els=array_filter($this->entries,$filter);
-        return new ArrayCollection($els);
-    }
     
     /**
-     * 映射元素
-     * {@inheritDoc}
-     * @see \swiftphp\common\collection\IStream::map()
-     * @return ArrayCollection
+     * 元素计数(与count功能一样)
      */
-    public function map(\Closure $mapper){
-        $els=array_map($mapper,$this->entries);
-        return new ArrayCollection($els);
-    }       
+    public function size(){
+        return count($this->entries);
+    }
     
     /**
      * 集合是否为空
@@ -60,74 +48,19 @@ class ArrayCollection implements ICollection
     }
     
     /**
-     * 元素计数
-     */
-    public function size(){
-        return count($this->entries);
-    }
-    
-    /**
-     * 当前元素计数
-     * {@inheritDoc}
-     * @see Countable::count()
-     */
-    public function count(){
-        return count($this->entries);
-    }
-    
-    /**
-     * 转换为数组
-     * {@inheritDoc}
-     * @see \swiftphp\common\collection\IStream::toArray()
-     */
-    public function toArray(){
-        return $this->entries;
-    }
-    
-    /**
-     * 转换为键值对数组
-     * {@inheritDoc}
-     * @see \swiftphp\common\collection\IStream::toMap()
-     */
-    public function toMap(\Closure $keyMapper,\Closure $valueMapper=null){
-        $kvs=[];
-        foreach ($this->entries as $el){
-            $key=$keyMapper($el);
-            $value=!empty($valueMapper)?$valueMapper($el):$el;
-            $kvs[$key]=$value;
-        }
-        return $kvs;
-    }
-    
-    /**
-     * 分组并转换为键值对二维数组
-     */
-    public function groupBy(\Closure $keyMapper,\Closure $valueMapper=null){
-        $kvs=[];
-        foreach ($this->entries as $el){
-            $key=$keyMapper($el);
-            $value=!empty($valueMapper)?$valueMapper($el):$el;
-            if(!array_key_exists($key, $kvs)){
-                $kvs[$key]=[];
-            }
-            $kvs[$key][]=$value;
-        }
-        return $kvs;
-    }
-    /**
      * 添加元素
-     * {@inheritDoc}
-     * @see \swiftphp\common\collection\ICollection::add()
+     * @param mixed $entry
+     * @return ICollection
      */
     public function add($entry){
         $this->entries[]=$entry;
-        return $this;
+        return $this;        
     }
     
     /**
      * 移除元素
-     * {@inheritDoc}
-     * @see \swiftphp\common\collection\ICollection::remove()
+     * @param mixed $entry
+     * @return ICollection
      */
     public function remove($entry){
         $key = array_search($entry, $this->entries, true);
@@ -162,12 +95,28 @@ class ArrayCollection implements ICollection
     
     /**
      * 清空所有元素
-     * {@inheritDoc}
-     * @see \swiftphp\common\collection\ICollection::clear()
+     * @return ICollection
      */
     public function clear(){
         $this->entries=[];
         return $this;
     }
+    
+    /**
+     * 元素计数
+     * {@inheritDoc}
+     * @see Countable::count()
+     */
+    public function count (){
+        return $this->size();
+    }    
+    
+    /**
+     * 转换为流对象
+     * @return IStream
+     */
+    public function stream(){
+        return new Stream($this->entries);
+    }    
 }
 
