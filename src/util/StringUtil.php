@@ -102,14 +102,14 @@ class StringUtil
      */
     public static function getFirstchar($zh)
     {
-        $fchar = ord($zh{0});
-        if($fchar >= ord("A") and $fchar <= ord("z") )return strtoupper($zh{0});
+        $fchar = ord($zh[0]);
+        if($fchar >= ord("A") and $fchar <= ord("z") )return strtoupper($zh[0]);
         //$s1 = iconv("UTF-8","gb2312//IGNORE", $zh);
         // $s2 = iconv("gb2312","UTF-8//IGNORE", $s1);
         $s1 = self::convertEncoding($zh,"GB2312");
         $s2 = self::convertEncoding($s1,"UTF-8");
         if($s2 == $zh){$s = $s1;}else{$s = $zh;}
-        $asc = ord($s{0}) * 256 + ord($s{1}) - 65536;
+        $asc = ord($s[0]) * 256 + ord($s[1]) - 65536;
         if($asc >= -20319 and $asc <= -20284) return "A";
         if($asc >= -20283 and $asc <= -19776) return "B";
         if($asc >= -19775 and $asc <= -19219) return "C";
